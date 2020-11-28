@@ -21,38 +21,23 @@ namespace WebApiAplication.Controllers
         }
 
         [HttpPost]
-        public void Post2([FromBody] string name)
+        public void AddNewBook([FromBody] string bookName)
         {
-            Dweller newUser = new Dweller();
-            newUser.HP = 100;
-            newUser.Name = name;
+            LibraryRecord newRecord = new LibraryRecord();
+            newRecord.BookName = bookName;
 
-            _ctx.Dwellers.Add(newUser);
+            _ctx.LibraryRecords.Add(newRecord);
             _ctx.SaveChanges();
         }
 
-        //[HttpPost]
-        //public void Post()
-        //{
-        //    Dweller newUser = new Dweller();
-        //    newUser.HP = 100;
-        //    newUser.Name = "STD";
-
-        //    _ctx.Dwellers.Add(newUser);
-        //    _ctx.SaveChanges();
-        //}
-
 
         [HttpGet]
-        public string Get()
+        public IEnumerable<string> GetBooksInLibrary()
         {
-            Dweller newUser = new Dweller();
-            newUser.HP = 100;
-            newUser.Name = "Одинокий путник";
+            var books = _ctx.LibraryRecords.Select(b => b.BookName).ToArray();
 
-            _ctx.Dwellers.Add(newUser);
-            _ctx.SaveChanges();
-            return "Не унывайте, пацаны";
+            return books;
+
         }
 
         [HttpGet("{ip}")]

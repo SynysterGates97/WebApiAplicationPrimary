@@ -14,6 +14,6 @@ namespace WebApiAplication
         public AppDataBaseContext(DbContextOptions<AppDataBaseContext> options) 
             : base(options) { }
 
-        public DbSet<Dweller> Dwellers { get; set; } 
+        public DbSet<LibraryRecord> LibraryRecords { get; set; } 
     }
 }
