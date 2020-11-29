@@ -15,5 +15,6 @@ namespace WebApiAplication
             : base(options) { }
 
         public DbSet<LibraryRecord> LibraryRecords { get; set; } 
+        public DbSet<LastRecordTime> LastRecordTimes { get; set; } 
     }
 }

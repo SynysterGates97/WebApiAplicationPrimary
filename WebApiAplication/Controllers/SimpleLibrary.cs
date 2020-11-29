@@ -17,7 +17,7 @@ namespace WebApiAplication.Controllers
 
         public SimpleLibrary(AppDataBaseContext ctx)
         {
-            _ctx = ctx;
+            _ctx = ctx;            
             _ctx.SavedChanges += _ctx_SavedChanges;
         }
 
@@ -25,15 +25,38 @@ namespace WebApiAplication.Controllers
 
         private void _ctx_SavedChanges(object sender, Microsoft.EntityFrameworkCore.SavedChangesEventArgs e)
         {
-            LastDbUpdateTime = DateTime.Now;
+            var lastDbUpdateTime = DateTime.Now;
+
+
+            int libCount = _ctx.LastRecordTimes.Count();
+            if (libCount == 0)
+            {
+                _ctx.LastRecordTimes.Add(new LastRecordTime() { lastUpdateTime = DateTime.Now });
+            }
+            else
+            {
+                _ctx.LastRecordTimes.Find(1).lastUpdateTime = DateTime.Now;
+            }
+                
+
+            _ctx.SavedChanges -= _ctx_SavedChanges;
+            _ctx.SaveChanges();
+            _ctx.SavedChanges += _ctx_SavedChanges;
         }
 
         [HttpGet()]
         public string GetLibraryHeader()
         {
+            int libCount = _ctx.LibraryRecords.Count();
+
+            string lastUpdateTimeString = _ctx.LastRecordTimes.Count() > 0 ?
+                  _ctx.LastRecordTimes.Find(1).lastUpdateTime.ToString() : 
+                 "никогда";
+
             string headString = $"В библиотеке на данный момент " +
                 $"{_ctx.LibraryRecords.Count()} книг, " +
-                $"дата последнего обновления {LastDbUpdateTime.ToString()}";
+                $"дата последнего обновления {lastUpdateTimeString}";
+
             return headString;
         }
 

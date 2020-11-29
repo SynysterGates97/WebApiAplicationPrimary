@@ -9,6 +9,8 @@ namespace WebApiAplication.Models
     {
         public int Id { get; set; }
 
+        public DateTime lastUpdateTime { get; set; }
+
         public string Author { get; set; }
 
         public string BookName { get; set; }
