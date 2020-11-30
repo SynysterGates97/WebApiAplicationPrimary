@@ -9,9 +9,8 @@ namespace WebApiAplication.Models
     {
         public int Id { get; set; }
 
-        public DateTime lastUpdateTime { get; set; }
+        public DateTime LastUpdateTime { get; set; }
 
-        public string Author { get; set; }
 
         private string _bookName;
 
@@ -21,12 +20,8 @@ namespace WebApiAplication.Models
             set 
             {
                 _bookName = value;
-                lastUpdateTime = DateTime.Now;
+                LastUpdateTime = DateTime.Now;
             }
         }
-
-        public string YearOfIssue { get; set; }
-
-        public string  Publisher { get; set; }
     }
 }

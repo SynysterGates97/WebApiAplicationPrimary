@@ -53,7 +53,7 @@ namespace WebApiAplication.Controllers
                   _ctx.LastRecordTimes.Find(1).lastUpdateTime.ToString() : 
                  "никогда";
 
-            string headString = $"В библиотеке на данный момент " +
+            string headString = $"В вашей библиотеке на данный момент " +
                 $"{_ctx.LibraryRecords.Count()} книг, " +
                 $"дата последнего обновления {lastUpdateTimeString}";
 
@@ -78,6 +78,14 @@ namespace WebApiAplication.Controllers
             var books = _ctx.LibraryRecords.Select(b => b.BookName).ToArray();
 
             return books;
+
+        }
+
+        [HttpGet("db")]
+        public IEnumerable<LibraryRecord> GetAll()
+        {
+
+            return _ctx.LibraryRecords;
 
         }
 
