@@ -115,7 +115,24 @@ namespace WebApiAplication.Controllers
 
         }
 
+        [HttpPut("{bookName}")]
+        public string ChangeBookName(string bookName, [FromBody] string newName)
+        {
+            var recordsToChange = _ctx.LibraryRecords.Where(u => u.BookName == bookName);
 
+            foreach(var record in recordsToChange)
+            {
+                _ctx.LibraryRecords.Find(record.Id).BookName = newName;
+            }
+
+            if (recordsToChange.Count() > 0)
+            {
+                _ctx.SaveChanges();
+                return $"Успешно изменена книга \"{newName}\". {recordsToChange.Count()} копий";
+            }
+
+            return $"Нельзя изменить имя книги {bookName} на {newName}";
+        }
 
         [HttpGet("{ip}")]
         public string Get(int ip)
