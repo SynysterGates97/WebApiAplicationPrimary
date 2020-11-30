@@ -81,6 +81,34 @@ namespace WebApiAplication.Controllers
 
         }
 
+        [HttpDelete("{bookName}")]
+        public string DeleteBookByName(string bookName)
+        {
+            var recordsToDelete = _ctx.LibraryRecords.Where(u => u.BookName ==  bookName);
+
+            int deletedRecordsCount = 0;
+            foreach(var record in recordsToDelete)
+            {
+                if (record != null)
+                {
+                    _ctx.LibraryRecords.Remove(record);
+                    deletedRecordsCount++;
+                    
+                }
+
+            }         
+            if(deletedRecordsCount > 0)
+            {
+                _ctx.SaveChanges();
+                return $"Книга \"{bookName}\" была удалена из вашей библиотеки, в количестве {deletedRecordsCount}";
+            }
+
+            return $"В библиотеке нет книги с таким названием";
+
+        }
+
+
+
         [HttpGet("{ip}")]
         public string Get(int ip)
         {
