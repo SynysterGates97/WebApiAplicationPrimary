@@ -13,7 +13,17 @@ namespace WebApiAplication.Models
 
         public string Author { get; set; }
 
-        public string BookName { get; set; }
+        private string _bookName;
+
+        public string BookName
+        {
+            get { return _bookName; }
+            set 
+            {
+                _bookName = value;
+                lastUpdateTime = DateTime.Now;
+            }
+        }
 
         public string YearOfIssue { get; set; }
 
