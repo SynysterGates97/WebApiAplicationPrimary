@@ -35,7 +35,8 @@ namespace WebApiAplication.Controllers
             }
             else
             {
-                _ctx.LastRecordTimes.Find(1).lastUpdateTime = DateTime.Now;
+                //_ctx.LastRecordTimes.Find(1).lastUpdateTime = DateTime.Now;
+                _ctx.LastRecordTimes.FirstOrDefault().lastUpdateTime = DateTime.Now;
             }
                 
 
@@ -44,10 +45,26 @@ namespace WebApiAplication.Controllers
             _ctx.SavedChanges += _ctx_SavedChanges;
         }
 
+        [HttpGet()]
+        public string GetLibraryHeader()
+        {
+            int libCount = _ctx.LibraryRecords.Count();
+
+            string lastUpdateTimeString = _ctx.LastRecordTimes.Count() > 0 ?
+                   _ctx.LastRecordTimes.FirstOrDefault().lastUpdateTime.ToString() :
+                 "никогда";
+
+            string headString = $"В вашей библиотеке на данный момент " +
+                $"{_ctx.LibraryRecords.Count()} книг, " +
+                $"дата последнего обновления {lastUpdateTimeString}";
+
+            return headString;
+        }
+
         [HttpGet("last")]
         public string GetLastBook()
         {
-            var lastRecordTime = _ctx.LastRecordTimes.Find(1).lastUpdateTime;
+            var lastRecordTime = _ctx.LastRecordTimes.FirstOrDefault().lastUpdateTime;
 
             var lastRecords = _ctx.LibraryRecords.ToList();
 
@@ -69,32 +86,6 @@ namespace WebApiAplication.Controllers
             //}
 
             return "Ошибка/нет добавленных книг";
-        }
-        [HttpGet()]
-        public string GetLibraryHeader()
-        {
-            int libCount = _ctx.LibraryRecords.Count();
-
-            string lastUpdateTimeString = _ctx.LastRecordTimes.Count() > 0 ?
-                  _ctx.LastRecordTimes.Find(1).lastUpdateTime.ToString() : 
-                 "никогда";
-
-            string headString = $"В вашей библиотеке на данный момент " +
-                $"{_ctx.LibraryRecords.Count()} книг, " +
-                $"дата последнего обновления {lastUpdateTimeString}";
-
-            return headString;
-        }
-
-
-        [HttpPost]
-        public void AddNewBook([FromBody] string bookName)
-        {
-            LibraryRecord newRecord = new LibraryRecord();
-            newRecord.BookName = bookName;
-                        
-            _ctx.LibraryRecords.Add(newRecord);
-            _ctx.SaveChanges();
         }
 
         [HttpGet("count")]
@@ -118,6 +109,16 @@ namespace WebApiAplication.Controllers
         public IEnumerable<LibraryRecord> GetAll()
         {
             return _ctx.LibraryRecords;
+        }
+
+        [HttpPost]
+        public void AddNewBook([FromBody] string bookName)
+        {
+            LibraryRecord newRecord = new LibraryRecord();
+            newRecord.BookName = bookName;
+                        
+            _ctx.LibraryRecords.Add(newRecord);
+            _ctx.SaveChanges();
         }
 
         [HttpDelete("{bookName}")]
