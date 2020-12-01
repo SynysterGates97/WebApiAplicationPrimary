@@ -44,6 +44,32 @@ namespace WebApiAplication.Controllers
             _ctx.SavedChanges += _ctx_SavedChanges;
         }
 
+        [HttpGet("last")]
+        public string GetLastBook()
+        {
+            var lastRecordTime = _ctx.LastRecordTimes.Find(1).lastUpdateTime;
+
+            var lastRecords = _ctx.LibraryRecords.ToList();
+
+            foreach (var record in lastRecords)
+            {
+                //Костыль
+                if (record.LastUpdateTime.Hour == lastRecordTime.Hour && 
+                    record.LastUpdateTime.Minute == lastRecordTime.Minute &&
+                    record.LastUpdateTime.Day == lastRecordTime.Day)
+                {
+
+                    return $"Ваша последняя книга \"{record.BookName}\" добавлена [{record.LastUpdateTime}]";
+                }
+
+            }
+            //if (lastRecords != null)
+            //{
+            //    return $"Ваша последняя книга \"{lastRecords.BookName}\" добавлена [{lastRecords.LastUpdateTime}]";
+            //}
+
+            return "Ошибка/нет добавленных книг";
+        }
         [HttpGet()]
         public string GetLibraryHeader()
         {
@@ -71,6 +97,13 @@ namespace WebApiAplication.Controllers
             _ctx.SaveChanges();
         }
 
+        [HttpGet("count")]
+        public int GetBooksCount()
+        {
+
+            return _ctx.LibraryRecords.Count();
+
+        }
 
         [HttpGet("books")]
         public IEnumerable<string> GetBooksInLibrary()
@@ -84,9 +117,7 @@ namespace WebApiAplication.Controllers
         [HttpGet("db")]
         public IEnumerable<LibraryRecord> GetAll()
         {
-
             return _ctx.LibraryRecords;
-
         }
 
         [HttpDelete("{bookName}")]
@@ -132,13 +163,6 @@ namespace WebApiAplication.Controllers
             }
 
             return $"Нельзя изменить имя книги {bookName} на {newName}";
-        }
-
-        [HttpGet("{ip}")]
-        public string Get(int ip)
-        {
-            
-            return "Hasssa" + ip;
         }
     }
 }
